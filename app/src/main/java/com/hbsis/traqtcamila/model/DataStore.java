@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.hbsis.traqtcamila.model.repositories.ActivityRepository;
 import com.hbsis.traqtcamila.model.repositories.SessionRepository;
-import com.hbsis.traqtcamila.model.repositories.TraqtDbHelper;
 
 /**
  * Um Singleton agrupando os repositórios das entidades do Traqt para facilitar o
