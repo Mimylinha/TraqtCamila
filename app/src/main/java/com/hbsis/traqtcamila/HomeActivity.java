@@ -25,6 +25,7 @@ public class HomeActivity extends AppCompatActivity  implements IntentExtras {
 
     DataStore dataStore;
     List<TraqtActivity> allActivities;
+    Spinner activitiesSpinner;
 
     //
     // -- CICLO DE VIDA DA ATIVIDADE
@@ -40,8 +41,8 @@ public class HomeActivity extends AppCompatActivity  implements IntentExtras {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(HomeActivity.this, FormActivity.class);
+                startActivityForResult(intent, REQUEST_FORM);
             }
         });
 
@@ -50,29 +51,44 @@ public class HomeActivity extends AppCompatActivity  implements IntentExtras {
         dataStore = DataStore.getInstance();
 
         // Configura um Spinner para listar as atividades
-        allActivities = dataStore.getActivityRepository().findAll();
-        String[] activitiesNames = new String[allActivities.size()];
-        for (int i = 0; i < allActivities.size(); i++) {
-            activitiesNames[i] = allActivities.get(i).getName();
-        }
-        ArrayAdapter<String> activitiesAdapter = new ArrayAdapter<>(this,
-                android.R.layout.simple_spinner_item, activitiesNames);
-        final Spinner activitiesSpinner = (Spinner)findViewById(R.id.activities_spinner);
-        activitiesSpinner.setAdapter(activitiesAdapter);
+        activitiesSpinner = (Spinner)findViewById(R.id.activities_spinner);
+        refreshActivitiesSpinner();
 
         Button selectActivityButton = (Button)findViewById(R.id.select_activity_button);
         selectActivityButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 // Obtém o item selecionado
-                TraqtActivity act =
-                        allActivities.get(activitiesSpinner.getSelectedItemPosition());
+                TraqtActivity act = allActivities.get(activitiesSpinner.getSelectedItemPosition());
+
                 // Cria e configura o Intent, e inicia a nova atividade
                 Intent intent = new Intent(HomeActivity.this, DetailsActivity.class);
                 intent.putExtra(ACTIVITY_ID_EXTRA, act.getId());
                 startActivity(intent);
+
             }
         });
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_FORM) {
+            // Caso um registro tenha sido inserido atualiza o Spinner
+            if (resultCode == RESULT_INSERTED)
+                refreshActivitiesSpinner();
+        }
+    }
+
+    //
+    // -- MÉTODOS PRIVADOS
+
+    void refreshActivitiesSpinner() {
+        allActivities = dataStore.getActivityRepository().findAll();
+        String[] activitiesNames = new String[allActivities.size()];
+        for (int i = 0; i < allActivities.size(); i++) {
+            activitiesNames[i] = allActivities.get(i).getName();
+        }
+        ArrayAdapter<String> activitiesAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, activitiesNames);
+        activitiesSpinner.setAdapter(activitiesAdapter);
+    }
 }

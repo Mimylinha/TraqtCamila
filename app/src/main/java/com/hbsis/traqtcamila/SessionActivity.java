@@ -1,6 +1,7 @@
 package com.hbsis.traqtcamila;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -114,6 +115,7 @@ public class SessionActivity extends AppCompatActivity implements IntentExtras {
                 chronometerTextView.setText(time);
             }
         });
+
         sessionTrack.setOnCompleteListener(new SessionTrack.OnCompleteListener() {
             @Override
             public void onComplete() {
@@ -124,6 +126,12 @@ public class SessionActivity extends AppCompatActivity implements IntentExtras {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
+                                // Carrega o resultado da sessão
+                                Intent intent = new Intent();
+                                intent.putExtra(SESSION_START_TIME_EXTRA, System.currentTimeMillis());
+                                intent.putExtra(SESSION_DURATION_EXTRA, chronometerTextView.getText().toString());
+                                intent.putExtra(SESSION_REPETITIONS_EXTRA, sessionTrack.getCurrentRepetitions());
+                                setResult(RESULT_OK, intent);
                                 finish();
                             }
                         })

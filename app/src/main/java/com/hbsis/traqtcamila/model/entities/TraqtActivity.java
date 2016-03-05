@@ -3,6 +3,7 @@ package com.hbsis.traqtcamila.model.entities;
 import android.content.ContentValues;
 import android.database.Cursor;
 
+import com.hbsis.traqtcamila.model.Category;
 import com.hbsis.traqtcamila.model.DataStore;
 import com.hbsis.traqtcamila.model.SessionParameters;
 import com.hbsis.traqtcamila.model.repositories.SessionRepository;
@@ -59,6 +60,13 @@ public class TraqtActivity
     public void setEnableVibration(boolean enableVibration) {
         this.enableVibration = enableVibration;
     }
+
+    public Category getCategoryInfo() {
+        if (getCategory() >= Category.values().length)
+            return null;
+        return Category.values()[getCategory()];
+    }
+
     public boolean isRemindOnSunday() {
         return remindOnSunday;
     }
